@@ -19,10 +19,10 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     const userCollection = client.db('taskApp').collection('users')
-    // const noteCollection = client.db('noteBooks').collection('notes')
+    const taskCollection = client.db('taskApp').collection('tasks')
     // const commentCollection = client.db('netBooks').collection('comment')
 
-
+    // add user data
     app.post('/users', async (req, res) => {
         const newUser = req.body;
         const query = { email: newUser.email }
@@ -32,6 +32,13 @@ async function run() {
             return res.send(result)
         }
         res.send({ message: 'already store data' })
+    })
+
+    // add tasks
+    app.post('/tasks', async (req, res) => {
+        const task = req.body;
+        const result = await taskCollection.insertOne(task);
+        res.send(result)
     })
 
 
