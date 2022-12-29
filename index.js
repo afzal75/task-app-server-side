@@ -70,6 +70,36 @@ async function run() {
         res.send(result);
     })
 
+    //send completed notes client
+    app.get('/completed-notes/:email', async (req, res) => {
+        const email = req.params.email
+        const query = { email }
+        const allTask = await taskCollection.find(query, { sort: { _id: -1 } }).toArray()
+        const notes = allTask.filter(n => n.completed)
+        res.send(notes);
+    });
+
+
+    // update completed situation
+    app.put('/tasks/:id', async (req, res) => {
+        const id = req.params.id;
+        const complete = req.body;
+        const filter = { _id: ObjectId(id) };
+        const options = { upsert: true };
+        const updatedDoc = {
+            $set: complete
+        }
+        const result = await taskCollection.updateOne(filter, updatedDoc, options);
+        res.send(result);
+    });
+
+    // delete task
+    app.delete('/tasks/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) }
+        const result = await taskCollection.deleteOne(query);
+        res.send(result);
+    })
 
 }
 
