@@ -41,8 +41,23 @@ async function run() {
         res.send(result)
     })
 
+    // send notes client
+    app.get('/tasks/:email', async (req, res) => {
+        const email = req.params.email
+        const query = { email }
+        const allTask = await taskCollection.find(query, { sort: { _id: -1 } }).toArray()
+        const tasks = allTask.filter(t => !t.completed)
+        res.send(tasks);
+    })
+    //send note client
+    app.get('/note/:id', async (req, res) => {
+        const id = req.params.id
+        const query = { _id: ObjectId(id) }
+        const note = await noteCollection.findOne(query)
+        res.send(note);
+    })
 
-    
+
 }
 
 
